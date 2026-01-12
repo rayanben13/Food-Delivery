@@ -1,0 +1,43 @@
+import { auth } from "@/src/auth";
+import EditUser from "@/src/components/edit-user-form";
+import prisma from "@/src/lib/prisma";
+import Typography from "@mui/material/Typography";
+import React from "react";
+
+export const dynamic = "force-dynamic";
+
+async function AdminPage() {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return <Typography textAlign="center">Unauthorized</Typography>;
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: {
+      name: true,
+      email: true,
+      city: true,
+      phone: true,
+      address: true,
+      image: true,
+    },
+  });
+
+  if (!user) {
+    return <Typography textAlign="center">User not found</Typography>;
+  }
+
+  return (
+    <div>
+      <Typography variant="h4" textAlign="center" color="primary.main">
+        Admin
+      </Typography>
+
+      <EditUser user={user} />
+    </div>
+  );
+}
+
+export default AdminPage;
