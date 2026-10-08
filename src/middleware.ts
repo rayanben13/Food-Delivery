@@ -1,13 +1,18 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { Role } from "@/generated/prisma/enums";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import { Role } from "./generated/prisma";
+// import { Role } from "@/generated/prisma/enums";
 
 export async function middleware(req: NextRequest) {
   const token = await getToken({
     req,
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.AUTH_SECRET,
   });
+  if (!token) console.log("ttt")
+
+  console.log("middleware");
+  console.log(token);
 
   const { pathname } = req.nextUrl;
 
